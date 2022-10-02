@@ -1,10 +1,3 @@
---[[
-    furnace.lua is owned by Dezel (c).  
-    Do not take ownership of this file 
-    without permission from the developers.
-
-    Create at 01/09/2022 - 17:50:17
-]]--
 ---@author Dezel
 
 LaboratoryMachine.Furnace = { Components = { Methylamine = {} } }

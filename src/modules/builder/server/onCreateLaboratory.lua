@@ -1,10 +1,3 @@
---[[
-    onCreateLaboratory.lua is owned by Dezel (c).  
-    Do not take ownership of this file 
-    without permission from the developers.
-
-    Create at 21/08/2022 - 14:23:40
-]]--
 ---@author Dezel
 
 LaboratoryUtils.Events:register("createlaboratory", function(info, grade)

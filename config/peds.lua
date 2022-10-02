@@ -1,10 +1,3 @@
---[[
-    peds.lua is owned by Dezel (c).  
-    Do not take ownership of this file 
-    without permission from the developers.
-
-    Create at 26/08/2022 - 12:18:47
-]]--
 ---@author Dezel
 
 LaboratoryConfig.Peds = {}

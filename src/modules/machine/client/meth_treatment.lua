@@ -1,10 +1,3 @@
---[[
-    treatment.lua is owned by Dezel (c).  
-    Do not take ownership of this file 
-    without permission from the developers.
-
-    Create at 06/09/2022 - 18:39:32
-]]--
 ---@author Dezel
 
 LaboratoryMachine.Treatment = {}

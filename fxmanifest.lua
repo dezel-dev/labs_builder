@@ -1,10 +1,3 @@
---[[
-    fxmanifest.lua is owned by Dezel (c).  
-    Do not take ownership of this file 
-    without permission from the developers.
-
-    Create at 19/08/2022 - 21:41:25
-]]--
 ---@author Dezel
 
 fx_version 'cerulean'

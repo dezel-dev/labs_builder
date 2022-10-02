@@ -1,10 +1,3 @@
---[[
-    onChestDeposit.lua is owned by Dezel (c).  
-    Do not take ownership of this file 
-    without permission from the developers.
-
-    Create at 23/08/2022 - 15:31:09
-]]--
 ---@author Dezel
 
 LaboratoryUtils.Events:register("chestDeposit", function(labId, name, qty)

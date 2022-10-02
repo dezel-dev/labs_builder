@@ -1,10 +1,3 @@
---[[
-    labs_manage.lua is owned by Dezel (c).  
-    Do not take ownership of this file 
-    without permission from the developers.
-
-    Create at 26/08/2022 - 11:35:11
-]]--
 ---@author Dezel
 
 RegisterCommand("labs_manage", function(source, args)

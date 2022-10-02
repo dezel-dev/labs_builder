@@ -1,10 +1,3 @@
---[[
-    marker.lua is owned by Dezel (c).  
-    Do not take ownership of this file 
-    without permission from the developers.
-
-    Create at 21/08/2022 - 21:36:52
-]]--
 ---@author Dezel
 
 Citizen.CreateThread(function()

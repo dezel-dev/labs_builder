@@ -1,10 +1,3 @@
---[[
-    menu.lua is owned by Dezel (c).  
-    Do not take ownership of this file 
-    without permission from the developers.
-
-    Create at 23/08/2022 - 14:53:30
-]]--
 ---@author Dezel
 
 local chestItems = nil

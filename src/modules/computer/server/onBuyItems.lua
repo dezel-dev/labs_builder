@@ -1,10 +1,3 @@
---[[
-    onBuyItems.lua is owned by Dezel (c).  
-    Do not take ownership of this file 
-    without permission from the developers.
-
-    Create at 24/08/2022 - 10:58:48
-]]--
 ---@author Dezel
 
 LaboratoryUtils.Events:register("buy_items_type=in_chest", function(item, quantity, lab_id, price)

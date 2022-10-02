@@ -1,10 +1,3 @@
---[[
-    Laboratory.lua is owned by Dezel (c).  
-    Do not take ownership of this file 
-    without permission from the developers.
-
-    Create at 21/08/2022 - 15:33:11
-]]--
 ---@author Dezel
 
 ---@class _Laboratory

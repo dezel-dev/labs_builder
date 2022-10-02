@@ -1,10 +1,3 @@
---[[
-    menu.lua is owned by Dezel (c).  
-    Do not take ownership of this file 
-    without permission from the developers.
-
-    Create at 24/08/2022 - 10:39:11
-]]--
 ---@author Dezel
 
 local index = {

@@ -1,10 +1,3 @@
---[[
-    onUseMethylamine.lua is owned by Dezel (c).  
-    Do not take ownership of this file 
-    without permission from the developers.
-
-    Create at 04/09/2022 - 17:56:49
-]]--
 ---@author Dezel
 
 LaboratoryUtils.Events:register("useGaz", function()

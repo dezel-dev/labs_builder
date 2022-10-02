@@ -1,10 +1,3 @@
---[[
-    laboratory.lua is owned by Dezel (c).  
-    Do not take ownership of this file 
-    without permission from the developers.
-
-    Create at 23/08/2022 - 12:40:16
-]]--
 ---@author Dezel
 
 LaboratoryConfig.Labs = {}

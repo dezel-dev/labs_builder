@@ -1,10 +1,3 @@
---[[
-    water.lua is owned by Dezel (c).  
-    Do not take ownership of this file 
-    without permission from the developers.
-
-    Create at 10/09/2022 - 12:32:13
-]]--
 ---@author Dezel
 
 LaboratoryUtils.Events:register("useWeedWater", function()

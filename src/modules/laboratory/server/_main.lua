@@ -1,10 +1,3 @@
---[[
-    _main.lua is owned by Dezel (c).  
-    Do not take ownership of this file 
-    without permission from the developers.
-
-    Create at 21/08/2022 - 15:38:58
-]]--
 ---@author Dezel
 
 local LaboratoryList = {}
