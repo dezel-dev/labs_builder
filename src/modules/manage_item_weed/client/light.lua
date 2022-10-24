@@ -7,7 +7,7 @@ LaboratoryUtils.Events:register("useWeedLight", function()
 		--return
 	end
 	local coords = vector3(GetEntityCoords(PlayerPedId()).x, GetEntityCoords(PlayerPedId()).y, GetEntityCoords(PlayerPedId()).z - .97)
-	ESX.Game.SpawnObject("prop_worklight_01a", coords, function(objId)
+	ESX.Game.SpawnObject(LaboratoryConfig.Labs.Weed.Objects.Light.Model, coords, function(objId)
 		local object_metadata = {
 			position = { coords = GetEntityCoords(PlayerPedId()), heading = -GetEntityHeading(PlayerPedId())},
 			id = objId
@@ -27,7 +27,7 @@ Citizen.CreateThread(function()
 			for k, v in pairs(objects_light) do
 				local dst = #(v.position.coords - GetEntityCoords(PlayerPedId()))
 				if (dst <= 1.0) then
-					ESX.ShowHelpNotification("Appuyez sur ~INPUT_CONTEXT~ pour ranger la lampe")
+					ESX.ShowHelpNotification(CurrentLocales.NOTIFICATION_LABS_WEED_PUT_AWAY_LIGHT)
 					if (IsControlJustPressed(0,51)) then
 						ESX.Game.DeleteObject(v.id)
 						table.remove(objects_light, k)

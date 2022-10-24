@@ -4,10 +4,10 @@ objects_battery = {}
 
 LaboratoryUtils.Events:register("useWeedBattery", function()
 	if (not LaboratoryModules.IsInLabs) then
-		--return
+		return
 	end
 	local coords = vector3(GetEntityCoords(PlayerPedId()).x, GetEntityCoords(PlayerPedId()).y, GetEntityCoords(PlayerPedId()).z - .97)
-	ESX.Game.SpawnObject("prop_battery_02", coords, function(objId)
+	ESX.Game.SpawnObject(LaboratoryConfig.Labs.Weed.Objects.Battery.Model, coords, function(objId)
 		local object_metadata = {
 			position = { coords = GetEntityCoords(PlayerPedId()), heading = -GetEntityHeading(PlayerPedId())},
 			id = objId
@@ -27,7 +27,7 @@ Citizen.CreateThread(function()
 			for k, v in pairs(objects_battery) do
 				local dst = #(v.position.coords - GetEntityCoords(PlayerPedId()))
 				if (dst <= 1.0) then
-					ESX.ShowHelpNotification("Appuyez sur ~INPUT_CONTEXT~ pour ranger la battery")
+					ESX.ShowHelpNotification(CurrentLocales.NOTIFICATION_LABS_WEED_PUT_AWAY_BATTERY)
 					if (IsControlJustPressed(0,51)) then
 						ESX.Game.DeleteObject(v.id)
 						table.remove(objects_battery, k)

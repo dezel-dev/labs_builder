@@ -9,14 +9,14 @@ end)
 
 LaboratoryUtils.Events:register("useWeedPot", function()
 	if (not LaboratoryModules.IsInLabs) then
-		--return
+		return
 	end
 	local coords = vector3(GetEntityCoords(PlayerPedId()).x, GetEntityCoords(PlayerPedId()).y, GetEntityCoords(PlayerPedId()).z - .97)
-	ESX.Game.SpawnObject("bkr_prop_weed_01_small_01c", coords, function(objId)
+	ESX.Game.SpawnObject(LaboratoryConfig.Labs.Weed.Objects.Pot.MainModel, coords, function(objId)
 		local object_metadata = {
 			position = { coords = GetEntityCoords(PlayerPedId()), heading = -GetEntityHeading(PlayerPedId())},
 			id = objId,
-			metadata = { plant = { state = false, growing = { state = false, timer = 10, canRecup = false, step = 0}, ressources = { water = { state = false, timer = 300 }, light = false, fan = false, battery = false } } }
+			metadata = { plant = { state = false, growing = { state = false, timer = LaboratoryConfig.Labs.Weed.ChangeStepTime, canRecup = false, step = 0}, ressources = { water = { state = false, timer = LaboratoryConfig.Labs.Weed.WaterTime }, light = false, fan = false, battery = false } } }
 		}
 		PlaceObjectOnGroundProperly(objId)
 		SetEntityHeading(object_metadata.id, object_metadata.position.heading)
@@ -34,7 +34,7 @@ Citizen.CreateThread(function()
 			for k, v in pairs(objects_pot) do
 				local dst = #(v.position.coords - GetEntityCoords(PlayerPedId()))
 				if (dst <= 1.0) and (not v.metadata.plant.growing.canRecup) then
-					ESX.ShowHelpNotification("Appuyez sur ~INPUT_CONTEXT~ pour ranger le pot")
+					ESX.ShowHelpNotification(CurrentLocales.NOTIFICATION_LABS_WEED_PUT_AWAY_POT)
 					if (IsControlJustPressed(0,51)) then
 						ESX.Game.DeleteObject(v.id)
 						table.remove(objects_pot, k)
@@ -45,7 +45,17 @@ Citizen.CreateThread(function()
 					if (radiusActive) then
 						DrawMarker(6, vector3(v.position.coords.x, v.position.coords.y, v.position.coords.z - 1.10), 0.0, 0.0, 0.0, -90.0, 0.0, 0.0, 7.5, 1.0, 7.5, 255, 255, 255, 150, false, false)
 					end
-					ESX.Game.Utils.DrawText3D(v.position.coords, ("Planté : %s~n~Eau : %s (%s s)~n~Lumière : %s~n~Ventilateur : %s"):format(v.metadata.plant.state and "~g~Oui~s~" or "~r~Non~s~", v.metadata.plant.ressources.water.state and "~g~Oui~s~" or "~r~Non~s~", v.metadata.plant.ressources.water.timer, v.metadata.plant.ressources.light and "~g~Oui~s~" or "~r~Non~s~", v.metadata.plant.ressources.fan and "~g~Oui~s~" or "~r~Non~s~"))
+					ESX.Game.Utils.DrawText3D(v.position.coords, ("%s : %s~n~%s : %s (%s s)~n~%s : %s~n~%s : %s"):format(
+							CurrentLocales.LABEL_LABS_WEED_PLANTED,
+							v.metadata.plant.state and "~g~"..CurrentLocales.LABEL_LABS_WEED_YES.."~s~" or "~r~"..CurrentLocales.LABEL_LABS_WEED_NO.."~s~",
+							CurrentLocales.LABEL_LABS_WEED_WATER,
+							v.metadata.plant.ressources.water.state and "~g~"..CurrentLocales.LABEL_LABS_WEED_YES.."~s~" or "~r~"..CurrentLocales.LABEL_LABS_WEED_NO.."~s~",
+							v.metadata.plant.ressources.water.timer,
+							CurrentLocales.LABEL_LABS_WEED_LIGHT,
+							v.metadata.plant.ressources.light and "~g~"..CurrentLocales.LABEL_LABS_WEED_YES.."~s~" or "~r~"..CurrentLocales.LABEL_LABS_WEED_NO.."~s~",
+							CurrentLocales.LABEL_LABS_WEED_FAN,
+							v.metadata.plant.ressources.fan and "~g~"..CurrentLocales.LABEL_LABS_WEED_YES.."~s~" or "~r~"..CurrentLocales.LABEL_LABS_WEED_NO.."~s~"
+					))
 				end
 				if (v.metadata.plant.growing.canRecup) and (dst <= 1.5) then
 					ESX.Game.Utils.DrawText3D(vector3(v.position.coords.x, v.position.coords.y, v.position.coords.z + 0.5), "Appuyez sur [~b~E~s~] pour récuper la Weed")
@@ -54,7 +64,7 @@ Citizen.CreateThread(function()
 						v.metadata.plant.state = false
 						v.metadata.plant.growing.step = 0
 						ESX.Game.DeleteObject(v.id)
-						ESX.Game.SpawnObject("bkr_prop_weed_01_small_01c", vector3(v.position.coords.x, v.position.coords.y, v.position.coords.z), function(objId)
+						ESX.Game.SpawnObject(LaboratoryConfig.Labs.Weed.Objects.Pot.MainModel, vector3(v.position.coords.x, v.position.coords.y, v.position.coords.z), function(objId)
 							PlaceObjectOnGroundProperly(objId)
 							objects_pot[k].id = objId
 							SetEntityHeading(v.position.heading)

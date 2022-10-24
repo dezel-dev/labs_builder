@@ -39,12 +39,12 @@ LaboratoryUtils.Events:register("useItem:methylamine", function()
 	if (LaboratoryModules.IsInLabs) then
 		if (IsEntityAtCoord(PlayerPedId(), LaboratoryConfig.Labs.Meth.Interaction.Machine.Furnace.position, 5.0, 5.0, 5.0, 0, 1, 0)) then
 			if (LaboratoryMachine.Furnace.Components.Methylamine.PouringCooldown) then
-				return (ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_FURNACE_WAIT))
+				return (ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_WAIT_COOLDOWN))
 			end
 			if (LaboratoryMachine.Furnace.Components.Methylamine.IsPouring) then
 				return ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_FURNACE_WAIT_POURING)
 			end
-			if (metadata.methylamine.state == 3 or metadata.methylamine.bar == 0.08235) then
+			if (metadata.methylamine.state == LaboratoryConfig.Labs.Meth.Interaction.Machine.Furnace.Methylamine.Number or metadata.methylamine.bar == 0.08235) then
 				return ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_FURNACE_METHYLAMINE_STOCK_FULL)
 			end
 
@@ -54,10 +54,9 @@ LaboratoryUtils.Events:register("useItem:methylamine", function()
 			end)
 
 			LaboratoryMachine.Furnace.Components.Methylamine.IsPouring = true
-			TriggerEvent("InteractSound_CL:PlayOnOne", "methylamine", 0.5)
-			Citizen.Wait(2230)
+			Citizen.Wait(LaboratoryConfig.Labs.Meth.Interaction.Machine.Furnace.Methylamine.Time)
 			metadata.methylamine.state = metadata.methylamine.state + 1
-			metadata.methylamine.bar = metadata.methylamine.bar + 0.02745
+			metadata.methylamine.bar = metadata.methylamine.bar + 0.08235 / LaboratoryConfig.Labs.Meth.Interaction.Machine.Furnace.Methylamine.Number
 			LaboratoryUtils.Events:toServer("useMethylamine")
 			LaboratoryMachine.Furnace.Components.Methylamine.IsPouring = false
 		end
@@ -117,7 +116,7 @@ function LaboratoryMachine.Furnace:drawBar(startT, endT, r, g, b)
 	SetTextScale(0.3, 0.3)
 	SetTextCentre(true)
 	SetTextEntry('STRING')
-	AddTextComponentString(LaboratoryMachine.Furnace.Timer.remain == 0 and CurrentLocales.MISC_LABS_METH_MACHINE_FURNACE_FINISH_LABEL or LaboratoryMachine.Furnace.Timer.remain.." "..CurrentLocales.MISC_LABS_METH_MACHINE_FURNACE_SECONDS_LABEL)
+	AddTextComponentString(LaboratoryMachine.Furnace.Timer.remain == 0 and CurrentLocales.MISC_LABS_METH_MACHINE_FINISH_LABEL or LaboratoryMachine.Furnace.Timer.remain.." "..CurrentLocales.MISC_LABS_METH_MACHINE_SECONDS_LABEL)
 	Set_2dLayer(3)
 	DrawText(X + 0.045, Y - 0.012)
 
@@ -126,7 +125,7 @@ function LaboratoryMachine.Furnace:drawBar(startT, endT, r, g, b)
 	SetTextScale(0.3, 0.3)
 	SetTextCentre(true)
 	SetTextEntry('STRING')
-	AddTextComponentString(CurrentLocales.MISC_LABS_METH_MACHINE_FURNACE_TIME_REMAINING_LABEL)
+	AddTextComponentString(CurrentLocales.MISC_LABS_METH_MACHINE_TIME_REMAINING_LABEL)
 	Set_2dLayer(3)
 	DrawText(X - 0.045, Y - 0.012)
 end
@@ -161,26 +160,26 @@ function LaboratoryMachine.Furnace:instructionnal()
 		PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
 		PushScaleformMovieFunctionParameterInt(5)
 		Button(GetControlInstructionalButton(2, 288, true))
-		ButtonMessage(CurrentLocales.MISC_LABS_METH_MACHINE_FURNACE_START_LABEL)
+		ButtonMessage(CurrentLocales.MISC_LABS_METH_MACHINE_START_LABEL)
 		PopScaleformMovieFunctionVoid()
 	else
 		PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
 		PushScaleformMovieFunctionParameterInt(5)
 		Button(GetControlInstructionalButton(2, 288, true))
-		ButtonMessage(CurrentLocales.MISC_LABS_METH_MACHINE_FURNACE_TRANSPOSE_METH_LABEL)
+		ButtonMessage(CurrentLocales.MISC_LABS_METH_MACHINE_TRANSPOSE_METH_LABEL)
 		PopScaleformMovieFunctionVoid()
 	end
 
 	PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
 	PushScaleformMovieFunctionParameterInt(2)
 	Button(GetControlInstructionalButton(0, 194, true))
-	ButtonMessage(CurrentLocales.MISC_LABS_METH_MACHINE_FURNACE_CANCEL_METH_LABEL)
+	ButtonMessage(CurrentLocales.MISC_LABS_METH_MACHINE_CANCEL_METH_LABEL)
 	PopScaleformMovieFunctionVoid()
 
 	PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
 	PushScaleformMovieFunctionParameterInt(1)
 	Button(GetControlInstructionalButton(0, 22, true))
-	ButtonMessage(CurrentLocales.MISC_LABS_METH_MACHINE_FURNACE_WASH_METH_LABEL)
+	ButtonMessage(CurrentLocales.MISC_LABS_METH_MACHINE_WASH_METH_LABEL)
 	PopScaleformMovieFunctionVoid()
 
 	PushScaleformMovieFunction(scaleform, "DRAW_INSTRUCTIONAL_BUTTONS")
@@ -207,7 +206,6 @@ Citizen.CreateThread(function()
 			end
 			metadata.wash = true
 			LaboratoryMachine.Furnace.IsMachineStart = false
-			TriggerEvent("InteractSound_CL:PlayOnOne", "finish_sound_effect", 0.5)
 			LaboratoryMachine.Furnace.Transpose.haveTo = true
 			LaboratoryMachine.Furnace.Transpose.pourcent = metadata.pourcent
 			local buttons = LaboratoryMachine.Furnace:instructionnal()
@@ -226,11 +224,15 @@ Citizen.CreateThread(function()
 		if (LaboratoryMachine.Furnace.IsMachineStart) then
 			interval = 1
 			while (metadata.temperature.mode == "hot" and LaboratoryMachine.Furnace.IsMachineStart) do
-				metadata.temperature.bar = metadata.temperature.bar + 0.00125
+				if (metadata.temperature.bar <= 0.08235) then
+					metadata.temperature.bar = metadata.temperature.bar + 0.00125
+				end
 				Wait(500)
 			end
 			while (metadata.temperature.mode == "cold" and LaboratoryMachine.Furnace.IsMachineStart) do
-				metadata.temperature.bar = metadata.temperature.bar - 0.00125
+				if (metadata.temperature.bar >= 0.0) then
+					metadata.temperature.bar = metadata.temperature.bar - 0.00125
+				end
 				Wait(500)
 			end
 		end
@@ -262,12 +264,16 @@ Citizen.CreateThread(function()
 		if (LaboratoryMachine.Furnace.IsMachineStart) then
 			interval = 1
 			while (metadata.temperature.state == "good" and LaboratoryMachine.Furnace.IsMachineStart) do
-				metadata.pourcent = metadata.pourcent+2
-				Wait(500)
+				if (metadata.pourcent ~= 100) then
+					metadata.pourcent = metadata.pourcent+1
+				end
+				Wait(1000)
 			end
 			while (metadata.temperature.state == "bad" and LaboratoryMachine.Furnace.IsMachineStart) do
-				metadata.pourcent = metadata.pourcent-1
-				Wait(500)
+				if (metadata.pourcent ~= 0) then
+					metadata.pourcent = metadata.pourcent-1
+				end
+				Wait(1000)
 			end
 		end
 		Wait(interval)
@@ -307,8 +313,8 @@ function LaboratoryMenu.Machine:furnace(data)
 						if (metadata.wash) then
 							ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_WASH)
 						else
-							if (metadata.methylamine.state ~= 3) then
-								ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_PUT_METHYLAMINE)
+							if (metadata.methylamine.state ~= LaboratoryConfig.Labs.Meth.Interaction.Machine.Furnace.Methylamine.Number) then
+								ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_FURNACE_PUT_METHYLAMINE)
 							else
 								TriggerEvent("InteractSound_CL:PlayWithinDistance", LaboratoryConfig.Labs.Meth.Interaction.Machine.Furnace.position, 2.5, "furnace", 0.5)
 								LaboratoryMachine.Furnace.IsMachineStart = true
@@ -318,7 +324,7 @@ function LaboratoryMenu.Machine:furnace(data)
 						ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_FURNACE_FINISH_OTHER_MACHINE)
 					end
 				else
-					LaboratoryMachine.Treatment.LoadMetadata(metadata)
+					LaboratoryMachine.Treatment.LoadMetadata(metadata, LaboratoryMachine.Furnace.Transpose.pourcent)
 					local buttons = LaboratoryMachine.Furnace:instructionnal()
 					DrawScaleformMovieFullscreen(buttons)
 					LaboratoryMachine.Furnace.Transpose.haveTo = false
@@ -337,8 +343,6 @@ function LaboratoryMenu.Machine:furnace(data)
 				if (metadata.wash) then
 					LaboratoryMachine.Furnace.Timer.remain = LaboratoryConfig.Labs.Meth.Interaction.Machine.Furnace.Timer
 					metadata.wash = false
-				else
-					--ESX.ShowNotification("~r~Vous n'avez pas a nettoyé la machine!")
 				end
 			end
 

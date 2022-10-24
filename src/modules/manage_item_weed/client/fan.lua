@@ -4,10 +4,10 @@ objects_fan = {}
 
 LaboratoryUtils.Events:register("useWeedFan", function()
 	if (not LaboratoryModules.IsInLabs) then
-		--return
+		return
 	end
 	local coords = vector3(GetEntityCoords(PlayerPedId()).x, GetEntityCoords(PlayerPedId()).y, GetEntityCoords(PlayerPedId()).z - .97)
-	ESX.Game.SpawnObject("bkr_prop_weed_fan_floor_01a", coords, function(objId)
+	ESX.Game.SpawnObject(LaboratoryConfig.Labs.Weed.Objects.Fan.Model, coords, function(objId)
 		local object_metadata = {
 			position = { coords = GetEntityCoords(PlayerPedId()), heading = -GetEntityHeading(PlayerPedId())},
 			id = objId
@@ -27,7 +27,7 @@ Citizen.CreateThread(function()
 			for k, v in pairs(objects_fan) do
 				local dst = #(v.position.coords - GetEntityCoords(PlayerPedId()))
 				if (dst <= 1.0) then
-					ESX.ShowHelpNotification("Appuyez sur ~INPUT_CONTEXT~ pour ranger le ventilateur")
+					ESX.ShowHelpNotification(CurrentLocales.NOTIFICATION_LABS_WEED_PUT_AWAY_FAN)
 					if (IsControlJustPressed(0,51)) then
 						ESX.Game.DeleteObject(v.id)
 						table.remove(objects_fan, k)

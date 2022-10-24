@@ -3,7 +3,7 @@
 local info = {
     gangName,
     laboratoryName,
-    laboratoryType = "illegal_craft",
+    laboratoryType = "drugs_production",
     laboratoryDrugs = "meth",
     laboratoryPosition,
     laboratoryPermission,
@@ -57,7 +57,6 @@ function LaboratoryMenu:builder()
                 end
             })
             RageUI.List(CurrentLocales.MENU_BUILDER_BUTTON_LABORATORY_TYPE.MAIN, {
-                { Name = CurrentLocales.MENU_BUILDER_BUTTON_LABORATORY_TYPE.ILLEGAL_CRAFT, type = "illegal_craft"},
                 { Name = CurrentLocales.MENU_BUILDER_BUTTON_LABORATORY_TYPE.DRUGS_PRODUCTION, type = "drugs_production"}
             }, index.type, nil, {LeftBadge = RageUI.BadgeStyle.Star}, true, {
                 onListChange = function(Index, Value)
@@ -68,7 +67,6 @@ function LaboratoryMenu:builder()
             if (info.laboratoryType == "drugs_production") then
                 RageUI.List(CurrentLocales.MENU_BUILDER_BUTTON_DRUGS_TYPE.MAIN, {
                     { Name = CurrentLocales.MENU_BUILDER_BUTTON_DRUGS_TYPE.METH, type = "meth"},
-                    { Name = CurrentLocales.MENU_BUILDER_BUTTON_DRUGS_TYPE.COKE, type = "coke"},
                     { Name = CurrentLocales.MENU_BUILDER_BUTTON_DRUGS_TYPE.WEED, type = "weed"}
                 }, index.drugs, nil, {LeftBadge = RageUI.BadgeStyle.Star}, true, {
                     onListChange = function(Index, Value)

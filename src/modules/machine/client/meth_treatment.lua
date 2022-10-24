@@ -4,7 +4,7 @@ LaboratoryMachine.Treatment = {}
 
 LaboratoryMachine.Treatment.IsOnMachine = false
 LaboratoryMachine.Treatment.IsMachineStart = false
-LaboratoryMachine.Treatment.Timer = { remain = 10 }
+LaboratoryMachine.Treatment.Timer = { remain = LaboratoryConfig.Labs.Meth.Interaction.Machine.Treatment.Timer }
 LaboratoryMachine.Treatment.Transpose = { haveTo = false, pourcent = nil }
 
 local metadata = {
@@ -16,7 +16,7 @@ local bar2 = {
 		position = { x = 0.88, y = 0.94 },
 		height = 0.0125,
 		width = "meth",
-		text = "Meth",
+		text = CurrentLocales.MISC_LABS_METH_MACHINE_METH_LABEL,
 		color1 = { r = 155, g = 231, b = 145, a = 180},
 		color2 = { r = 185, g = 252, b = 176, a = 180},
 	},
@@ -65,7 +65,7 @@ function LaboratoryMachine.Treatment:drawBar(startT, endT, r, g, b)
 	SetTextScale(0.3, 0.3)
 	SetTextCentre(true)
 	SetTextEntry('STRING')
-	AddTextComponentString(LaboratoryMachine.Treatment.Timer.remain == 0 and "Fini" or LaboratoryMachine.Treatment.Timer.remain.." secondes")
+	AddTextComponentString(LaboratoryMachine.Treatment.Timer.remain == 0 and CurrentLocales.MISC_LABS_METH_MACHINE_FINISH_LABEL or LaboratoryMachine.Treatment.Timer.remain..CurrentLocales.MISC_LABS_METH_MACHINE_SECONDS_LABEL)
 	Set_2dLayer(3)
 	DrawText(X + 0.045, Y - 0.012)
 
@@ -74,7 +74,7 @@ function LaboratoryMachine.Treatment:drawBar(startT, endT, r, g, b)
 	SetTextScale(0.3, 0.3)
 	SetTextCentre(true)
 	SetTextEntry('STRING')
-	AddTextComponentString("Temps restant :")
+	AddTextComponentString(CurrentLocales.MISC_LABS_METH_MACHINE_TIME_REMAINING_LABEL)
 	Set_2dLayer(3)
 	DrawText(X - 0.045, Y - 0.012)
 
@@ -88,7 +88,7 @@ function LaboratoryMachine.Treatment:drawBar(startT, endT, r, g, b)
 	SetTextScale(0.3, 0.3)
 	SetTextCentre(true)
 	SetTextEntry('STRING')
-	AddTextComponentString(not metadata.meth.pourcent and "Aucune meth" or metadata.meth.pourcent.."%")
+	AddTextComponentString(not metadata.meth.pourcent and CurrentLocales.MISC_LABS_METH_MACHINE_NONE_METH or metadata.meth.pourcent.."%")
 	Set_2dLayer(3)
 	DrawText(X + 0.045, Y - 0.012)
 
@@ -97,7 +97,7 @@ function LaboratoryMachine.Treatment:drawBar(startT, endT, r, g, b)
 	SetTextScale(0.3, 0.3)
 	SetTextCentre(true)
 	SetTextEntry('STRING')
-	AddTextComponentString("Pourcent : ")
+	AddTextComponentString(CurrentLocales.MISC_LABS_METH_MACHINE_POURCENT_LABEL)
 	Set_2dLayer(3)
 	DrawText(X - 0.045, Y - 0.012)
 end
@@ -120,26 +120,26 @@ function LaboratoryMachine.Treatment:instructionnal()
 		PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
 		PushScaleformMovieFunctionParameterInt(3)
 		Button(GetControlInstructionalButton(2, 288, true))
-		ButtonMessage("Commencer")
+		ButtonMessage(CurrentLocales.MISC_LABS_METH_MACHINE_START_LABEL)
 		PopScaleformMovieFunctionVoid()
 	else
 		PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
 		PushScaleformMovieFunctionParameterInt(3)
 		Button(GetControlInstructionalButton(2, 288, true))
-		ButtonMessage("Transposer la meth")
+		ButtonMessage(CurrentLocales.MISC_LABS_METH_MACHINE_TRANSPOSE_METH_LABEL)
 		PopScaleformMovieFunctionVoid()
 	end
 
 	PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
 	PushScaleformMovieFunctionParameterInt(2)
 	Button(GetControlInstructionalButton(0, 194, true))
-	ButtonMessage("Annuler")
+	ButtonMessage(CurrentLocales.MISC_LABS_METH_MACHINE_CANCEL_METH_LABEL)
 	PopScaleformMovieFunctionVoid()
 
 	PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
 	PushScaleformMovieFunctionParameterInt(1)
 	Button(GetControlInstructionalButton(0, 22, true))
-	ButtonMessage("Nettoyer")
+	ButtonMessage(CurrentLocales.MISC_LABS_METH_MACHINE_WASH_METH_LABEL)
 	PopScaleformMovieFunctionVoid()
 
 	PushScaleformMovieFunction(scaleform, "DRAW_INSTRUCTIONAL_BUTTONS")
@@ -154,8 +154,8 @@ function LaboratoryMachine.Treatment:instructionnal()
 
 	return scaleform
 end
-function LaboratoryMachine.Treatment.LoadMetadata(data)
-	metadata.meth.pourcent = data.pourcent
+function LaboratoryMachine.Treatment.LoadMetadata(data, pourcent)
+	metadata.meth.pourcent = pourcent
 	metadata.meth.bar = 0.08235
 	local buttons = LaboratoryMachine.Treatment:instructionnal()
 	DrawScaleformMovieFullscreen(buttons)
@@ -172,7 +172,6 @@ Citizen.CreateThread(function()
 			end
 			metadata.wash = true
 			LaboratoryMachine.Treatment.IsMachineStart = false
-			TriggerEvent("InteractSound_CL:PlayOnOne", "finish_sound_effect", 0.5)
 			LaboratoryMachine.Treatment.Transpose.haveTo = true
 			LaboratoryMachine.Treatment.Transpose.pourcent = metadata.meth.pourcent
 			local buttons = LaboratoryMachine.Treatment:instructionnal()
@@ -211,10 +210,10 @@ function LaboratoryMenu.Machine:treatment(data)
 				if (not LaboratoryMachine.Treatment.Transpose.haveTo) then
 					if (LaboratoryMachine.CanTreat) then
 						if (metadata.wash) then
-							ESX.ShowNotification("~r~Veuillez nettoyer la machine!")
+							ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_WASH)
 						else
 							if (not metadata.meth.pourcent) then
-								ESX.ShowNotification("~r~Veuillez mettre de la meth!")
+								ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_PUT_METH)
 							else
 								TriggerEvent("InteractSound_CL:PlayWithinDistance", LaboratoryConfig.Labs.Meth.Interaction.Machine.Treatment.position, 2.5, "furnace", 0.5)
 								LaboratoryMachine.Treatment.IsMachineStart = true
@@ -241,8 +240,6 @@ function LaboratoryMenu.Machine:treatment(data)
 				if (metadata.wash) then
 					LaboratoryMachine.Treatment.Timer.remain = 180
 					metadata.wash = false
-				else
-					ESX.ShowNotification("~r~Vous n'avez pas a nettoyé la machine!")
 				end
 			end
 

@@ -23,18 +23,6 @@ client_scripts {
     "src/vendors/sound/client/main.lua"
 }
 server_script "@oxmysql/lib/MySQL.lua"
-server_script "src/vendors/sound/server/main.lua"
-ui_page "src/vendors/sound/client/html/index.html"
-files {
-    'src/vendors/sound/client/html/index.html',
-    -- Begin Sound Files Here...
-    -- client/html/sounds/ ... .ogg
-    'src/vendors/sound/client/html/sounds/demo.ogg',
-    'src/vendors/sound/client/html/sounds/methylamine.ogg',
-    'src/vendors/sound/client/html/sounds/furnace.ogg',
-    'src/vendors/sound/client/html/sounds/finish_sound_effect.ogg',
-    'src/vendors/sound/client/html/sounds/gaz.ogg',
-}
 
 
 --Config
@@ -65,3 +53,9 @@ client_script "src/modules/**/client/*.lua"
 --Commands
 server_script "src/commands/server/*.lua"
 client_script "src/commands/client/*.lua"
+
+escrow_ignore {
+    "config/*.lua",
+    "config/labs.sql",
+    "locales/fr.lua",
+}

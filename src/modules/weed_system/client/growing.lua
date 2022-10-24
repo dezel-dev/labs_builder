@@ -33,12 +33,12 @@ Citizen.CreateThread(function()
 			if (v.metadata.plant.growing.state) and (v.metadata.plant.state) and (not v.metadata.plant.growing.canRecup) then
 				v.metadata.plant.growing.timer = v.metadata.plant.growing.timer - 1
 				if (v.metadata.plant.growing.timer == 0) then
-					v.metadata.plant.growing.timer = 3
+					v.metadata.plant.growing.timer = LaboratoryConfig.Labs.Weed.ChangeStepTime
 					if (v.metadata.plant.growing.step ~= 4) then
 						v.metadata.plant.growing.step = v.metadata.plant.growing.step+1
-						LaboratoryWeed:changeStep(v.metadata.plant.growing.step+1, v.id, v.position, k)
+						LaboratoryWeed:changeStep(v.metadata.plant.growing.step, v.id, v.position, k)
 					end
-					if (v.metadata.plant.growing.step == 4) then
+					if (v.metadata.plant.growing.step == LaboratoryConfig.Labs.Weed.Objects.Pot.MaxStep-1) then
 						v.metadata.plant.growing.canRecup = true
 						v.metadata.plant.growing.state = false
 					end
@@ -57,7 +57,7 @@ Citizen.CreateThread(function()
 		if (LaboratoryModules.IsInLabs) then
 			interval = 250
 			for k, v in pairs(objects_pot) do
-				local obj = GetClosestObjectOfType(v.position.coords, 2.5, GetHashKey("prop_worklight_01a"), false)
+				local obj = GetClosestObjectOfType(v.position.coords, 2.5, GetHashKey(LaboratoryConfig.Labs.Weed.Objects.Light.Model), false)
 				if (obj ~= 0) then
 					v.metadata.plant.ressources.light = true
 				else
@@ -77,7 +77,7 @@ Citizen.CreateThread(function()
 		if (LaboratoryModules.IsInLabs) then
 			interval = 250
 			for k, v in pairs(objects_pot) do
-				local obj = GetClosestObjectOfType(v.position.coords, 5.0, GetHashKey("prop_battery_02"), false)
+				local obj = GetClosestObjectOfType(v.position.coords, 5.0, GetHashKey(LaboratoryConfig.Labs.Weed.Objects.Battery.Model), false)
 				if (obj ~= 0) then
 					v.metadata.plant.ressources.battery = true
 				else
@@ -97,7 +97,7 @@ Citizen.CreateThread(function()
 		if (LaboratoryModules.IsInLabs) then
 			interval = 250
 			for k, v in pairs(objects_pot) do
-				local obj = GetClosestObjectOfType(v.position.coords, 5.0, GetHashKey("bkr_prop_weed_fan_floor_01a"), false)
+				local obj = GetClosestObjectOfType(v.position.coords, 5.0, GetHashKey(LaboratoryConfig.Labs.Weed.Objects.Fan.Model), false)
 				if (obj ~= 0) then
 					v.metadata.plant.ressources.fan = true
 				else

@@ -34,6 +34,7 @@ local function loadObjects()
 		end)
 	end
 end
+
 local function unloadObjects()
 	for _, v in pairs(objects_battery) do
 		ESX.Game.DeleteObject(v.id)
@@ -65,12 +66,12 @@ LaboratoryUtils.Events:register("successEnterLaboratory_type=drugs_production:dr
 			if (dst <= 1.25) then
 				ESX.ShowHelpNotification(CurrentLocales.NOTIFICATION_LABS_EXIT)
 				if (IsControlJustPressed(0,51)) then
+					unloadObjects()
 					LaboratoryUtils.Misc:transition(1000, function()
 						LaboratoryUtils.Events:toServer("exitLaboratory")
 						SetEntityCoords(PlayerPedId(), vector3(laboratory.position.x, laboratory.position.y, laboratory.position.z-0.97))
 					end)
 					LaboratoryModules.IsInLabs = false
-					unloadObjects()
 				end
 			end
 
@@ -90,7 +91,7 @@ LaboratoryUtils.Events:register("successEnterLaboratory_type=drugs_production:dr
 			if (dst <= 1.25) then
 				ESX.ShowHelpNotification(CurrentLocales.NOTIFICATION_LABS_COMPUTER)
 				if (IsControlJustPressed(0,51)) then
-					LaboratoryMenu:computer({}, laboratory.id)
+					LaboratoryMenu:computer(LaboratoryConfig.Labs.Meth.Interaction.Computer.Ressources, laboratory.id)
 				end
 			end
 

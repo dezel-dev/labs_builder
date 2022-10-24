@@ -21,7 +21,7 @@ local bar2 = {
 		position = { x = 0.88, y = 0.94 },
 		height = 0.0125,
 		width = "meth",
-		text = "Meth",
+		text = CurrentLocales.MISC_LABS_METH_MACHINE_METH_LABEL,
 		color1 = { r = 155, g = 231, b = 145, a = 180},
 		color2 = { r = 185, g = 252, b = 176, a = 180},
 	},
@@ -29,7 +29,7 @@ local bar2 = {
 		position = { x = 0.88, y = 0.9},
 		height = 0.0125,
 		width = "gaz",
-		text = "Gaz",
+		text = CurrentLocales.MISC_LABS_METH_MACHINE_GAZ_LABEL,
 		color1 = { r = 230, g = 96, b = 73, a = 180},
 		color2 = { r = 255, g = 64, b = 31, a = 180},
 	},
@@ -78,7 +78,7 @@ function LaboratoryMachine.Gaz:drawBar(startT, endT, r, g, b)
 	SetTextScale(0.3, 0.3)
 	SetTextCentre(true)
 	SetTextEntry('STRING')
-	AddTextComponentString(LaboratoryMachine.Gaz.Timer.remain == 0 and "Fini" or LaboratoryMachine.Gaz.Timer.remain.." secondes")
+	AddTextComponentString(LaboratoryMachine.Gaz.Timer.remain == 0 and CurrentLocales.MISC_LABS_METH_MACHINE_FINISH_LABEL or LaboratoryMachine.Gaz.Timer.remain..CurrentLocales.MISC_LABS_METH_MACHINE_SECONDS_LABEL)
 	Set_2dLayer(3)
 	DrawText(X + 0.045, Y - 0.012)
 
@@ -101,7 +101,7 @@ function LaboratoryMachine.Gaz:drawBar(startT, endT, r, g, b)
 	SetTextScale(0.3, 0.3)
 	SetTextCentre(true)
 	SetTextEntry('STRING')
-	AddTextComponentString(not metadata.meth.pourcent and "Aucune meth" or metadata.meth.pourcent.."%")
+	AddTextComponentString(not metadata.meth.pourcent and CurrentLocales.MISC_LABS_METH_MACHINE_NONE_METH or metadata.meth.pourcent.."%")
 	Set_2dLayer(3)
 	DrawText(X + 0.045, Y - 0.012)
 
@@ -133,26 +133,26 @@ function LaboratoryMachine.Gaz:instructionnal()
 		PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
 		PushScaleformMovieFunctionParameterInt(3)
 		Button(GetControlInstructionalButton(2, 288, true))
-		ButtonMessage("Commencer")
+		ButtonMessage(CurrentLocales.MISC_LABS_METH_MACHINE_START_LABEL)
 		PopScaleformMovieFunctionVoid()
 	else
 		PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
 		PushScaleformMovieFunctionParameterInt(3)
 		Button(GetControlInstructionalButton(2, 288, true))
-		ButtonMessage("Recevoir les pochons")
+		ButtonMessage(CurrentLocales.MISC_LABS_METH_MACHINE_GAZ_RECEIVE_P_LABEL)
 		PopScaleformMovieFunctionVoid()
 	end
 
 	PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
 	PushScaleformMovieFunctionParameterInt(2)
 	Button(GetControlInstructionalButton(0, 194, true))
-	ButtonMessage("Annuler")
+	ButtonMessage(CurrentLocales.MISC_LABS_METH_MACHINE_CANCEL_METH_LABEL)
 	PopScaleformMovieFunctionVoid()
 
 	PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
 	PushScaleformMovieFunctionParameterInt(1)
 	Button(GetControlInstructionalButton(0, 22, true))
-	ButtonMessage("Nettoyer")
+	ButtonMessage(CurrentLocales.MISC_LABS_METH_MACHINE_WASH_METH_LABEL)
 	PopScaleformMovieFunctionVoid()
 
 	PushScaleformMovieFunction(scaleform, "DRAW_INSTRUCTIONAL_BUTTONS")
@@ -172,13 +172,13 @@ LaboratoryUtils.Events:register("useItem:gaz", function()
 	if (LaboratoryModules.IsInLabs) then
 		if (IsEntityAtCoord(PlayerPedId(), LaboratoryConfig.Labs.Meth.Interaction.Machine.Gaz.position, 5.0, 5.0, 5.0, 0, 1, 0)) then
 			if (LaboratoryMachine.Gaz.Components.GazLiquid.PouringCooldown) then
-				return (ESX.ShowNotification("~r~Patientez avant de faire cela!"))
+				return (ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_WAIT_COOLDOWN))
 			end
 			if (LaboratoryMachine.Gaz.Components.GazLiquid.IsPouring) then
-				return ESX.ShowNotification("~r~Attendez que le gaz sur la machine soit totalement verser!")
+				return ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_TREATMENT_WAIT_POURING)
 			end
-			if (metadata.gaz.state == 3 or metadata.gaz.bar == 0.08235) then
-				return ESX.ShowNotification("~r~Stock de methylamine plein!")
+			if (metadata.gaz.state == LaboratoryConfig.Labs.Meth.Interaction.Machine.Gaz.Gaz.Number or metadata.gaz.bar == 0.08235) then
+				return ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_TREATMENT_GAZ_STOCK_FULL)
 			end
 
 			LaboratoryMachine.Gaz.Components.GazLiquid.PouringCooldown = true
@@ -187,10 +187,9 @@ LaboratoryUtils.Events:register("useItem:gaz", function()
 			end)
 
 			LaboratoryMachine.Gaz.Components.GazLiquid.IsPouring = true
-			TriggerEvent("InteractSound_CL:PlayOnOne", "gaz", 0.2)
-			Citizen.Wait(3000)
+			Citizen.Wait(LaboratoryConfig.Labs.Meth.Interaction.Machine.Gaz.Gaz.Time)
 			metadata.gaz.state = metadata.gaz.state + 1
-			metadata.gaz.bar = metadata.gaz.bar + 0.02745
+			metadata.gaz.bar = metadata.gaz.bar + 0.08235 / LaboratoryConfig.Labs.Meth.Interaction.Machine.Gaz.Gaz.Number
 			LaboratoryUtils.Events:toServer("useGaz")
 			LaboratoryMachine.Gaz.Components.GazLiquid.IsPouring = false
 		end
@@ -217,7 +216,6 @@ Citizen.CreateThread(function()
 			LaboratoryMachine.Gaz.IsMachineStart = false
 			LaboratoryMachine.Gaz.Transpose.haveTo = true
 			LaboratoryMachine.CanGaz = false
-			TriggerEvent("InteractSound_CL:PlayOnOne", "finish_sound_effect", 0.5)
 			local buttons = LaboratoryMachine.Gaz:instructionnal()
 			DrawScaleformMovieFullscreen(buttons)
 			metadata.wash = true
@@ -255,29 +253,29 @@ function LaboratoryMenu.Machine:gaz(data)
 				if (not LaboratoryMachine.Gaz.Transpose.haveTo) then
 					if (LaboratoryMachine.CanGaz) then
 						if (metadata.wash) then
-							ESX.ShowNotification("~r~Veuillez nettoyer la machine!")
+							ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_WASH)
 						else
-							if (metadata.gaz.state ~= 3) then
-								ESX.ShowNotification("~r~Veuillez mettre du gaz!")
+							if (metadata.gaz.state ~= LaboratoryConfig.Labs.Meth.Interaction.Machine.Gaz.Gaz.Number) then
+								ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_TREATMENT_PUT_GAZ)
 							else
 								if (metadata.meth.pourcent) then
 									LaboratoryMachine.Gaz.IsMachineStart = true
 								else
-									ESX.ShowNotification("~r~Veuillez mettre de la meth!")
+									ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_PUT_METH)
 								end
 							end
 						end
 					else
-						ESX.ShowNotification("~r~Veuillez terminer la Meth dans les autres machines avant d'en commencer une autre!")
+						ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_FURNACE_FINISH_OTHER_MACHINE)
 					end
 				else
 					local bag
 					if (metadata.meth.pourcent < 50) then
-						bag = 2
+						bag = LaboratoryConfig.Labs.Meth.Interaction.Machine.Gaz.Bag.BadPourcent
 					elseif (metadata.meth.pourcent < 75) then
-						bag = 5
+						bag = LaboratoryConfig.Labs.Meth.Interaction.Machine.Gaz.Bag.MidPourcent
 					elseif (metadata.meth.pourcent <= 100) then
-						bag = 8
+						bag = LaboratoryConfig.Labs.Meth.Interaction.Machine.Gaz.Bag.MaxPourcent
 					end
 
 					metadata.meth.pourcent = nil
@@ -302,7 +300,7 @@ function LaboratoryMenu.Machine:gaz(data)
 					LaboratoryMachine.Gaz.Timer.remain = 10
 					metadata.wash = false
 				else
-					ESX.ShowNotification("~r~Vous n'avez pas a nettoyé la machine!")
+					ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_METH_MACHINE_WASH)
 				end
 			end
 

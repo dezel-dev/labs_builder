@@ -37,6 +37,7 @@ function LaboratoryModules.Meth:loadBlips()
 end
 
 LaboratoryUtils.Events:register("successEnterLaboratory_type=drugs_production:drugs=meth", function(laboratory)
+	print("Ok")
 	LaboratoryModules.IsInLabs = true
 	Citizen.CreateThread(function()
 		LaboratoryMachine[laboratory.id] = laboratory.machine
@@ -50,8 +51,7 @@ LaboratoryUtils.Events:register("successEnterLaboratory_type=drugs_production:dr
 			--Exit interaction =>
 			local dst = #(LaboratoryConfig.Labs.Meth.Interaction.Exit.position - GetEntityCoords(PlayerPedId()))
 			DrawMarker(6, LaboratoryConfig.Labs.Meth.Interaction.Exit.position, 0.0, 0.0, 0.0, -90.0, 0.0, 0.0, 1.0, 1.0, 1.0, 255, 255, 255, 150, false, false)
-			if (dst <= 1.25) then
-				ESX.ShowHelpNotification(CurrentLocales.NOTIFICATION_LABS_METH_EXIT)
+			if (dst <= 1.25) then ESX.ShowHelpNotification(CurrentLocales.NOTIFICATION_LABS_EXIT)
 				if (IsControlJustPressed(0,51)) then
 					LaboratoryUtils.Misc:transition(1000, function()
 						for _, v in pairs(activeBlips) do
@@ -80,7 +80,7 @@ LaboratoryUtils.Events:register("successEnterLaboratory_type=drugs_production:dr
 			if (dst <= 1.25) then
 				ESX.ShowHelpNotification(CurrentLocales.NOTIFICATION_LABS_COMPUTER)
 				if (IsControlJustPressed(0,51)) then
-					LaboratoryMenu:computer({}, laboratory.id)
+					LaboratoryMenu:computer(LaboratoryConfig.Labs.Meth.Interaction.Computer.Ressources, laboratory.id)
 				end
 			end
 

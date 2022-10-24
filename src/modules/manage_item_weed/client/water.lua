@@ -2,14 +2,14 @@
 
 LaboratoryUtils.Events:register("useWeedWater", function()
 	if (not LaboratoryModules.IsInLabs) then
-		--return
+		return
 	end
 	local coords = GetEntityCoords(PlayerPedId())
 	for _, v in pairs(objects_pot) do
 		local dst = #(v.position.coords - coords)
 		if (dst <= 1.0) then
 			v.metadata.plant.ressources.water.state = true
-			ESX.ShowNotification("~g~Vous avez utilisé un bidon d'eau dans la plante!")
+			ESX.ShowNotification(CurrentLocales.NOTIFICATION_LABS_WEED_WATER)
 			LaboratoryUtils.Events:toServer("removeWeedWater")
 			return
 		end
@@ -22,7 +22,7 @@ Citizen.CreateThread(function()
 			if (v.metadata.plant.ressources.water.state) then
 				v.metadata.plant.ressources.water.timer = v.metadata.plant.ressources.water.timer - 1
 				if (v.metadata.plant.ressources.water.timer == 0) then
-					v.metadata.plant.ressources.water.timer = 300
+					v.metadata.plant.ressources.water.timer = LaboratoryConfig.Labs.Weed.WaterTime
 					v.metadata.plant.ressources.water.state = false
 				end
 			end
